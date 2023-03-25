@@ -1,0 +1,3 @@
+The screenshot of our visualization shows the orbits of 161 different near-Earth comets. The data is from a NASA open dataset entitled "Near-Earth Comets - Orbital Elements". Each white ellipse is the orbital path of a different comet projected onto a 2D plane. The blue circle near the center of the plotted orbits is the orbit of Earth. 
+
+Due to the large variance in scale of the orbits and the relative density of the orbits closer to Earth, thought will need to be given to how the data is displayed and filtered to ensure it is interpretable by the user. Future revisions of the visulization will add filtering and data-on-demand features allowing the user to hone on the data that is useful to them. 
