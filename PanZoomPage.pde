@@ -123,7 +123,9 @@ public class PanZoomPage {
   }
   
   void mouseDragged() {
-    if (mouseButton == LEFT) {
+    // Beware! `mouseX < 1300` is a dumb hard-coded solution to prevent
+    // mouse drags on the filter window from moving the visualization
+    if (mouseButton == LEFT && mouseX < 1300) {
       int deltaX = mouseX - lastMouseX;
       int deltaY = mouseY - lastMouseY;
       translateX += deltaX;
