@@ -16,17 +16,14 @@ public<T> List<T> filter(List<T> list, Predicate<T> criteria) {
   return list.stream().filter(criteria).collect(Collectors.<T>toList());
 }
 
-
 public<T,U extends Comparable<? super U>> List<T> sort(List<T> list, Function<T,U> func) {
   return list.stream().sorted(Comparator.comparing(func)).collect(Collectors.<T>toList());
 }
-
 
 // TODO: test this one
 public<T,U> List<U> map(List<T> list, Function<T,U> func) {
   return list.stream().map(func).collect(Collectors.<U>toList());
 }
-
 
 // Min and max constants for filtering
 final float minq = 0.028321056;
@@ -76,6 +73,9 @@ class Comet {
   public float ref;
   public String name;
   public String searchName;
+  
+  
+  public boolean mouseOverOrbit;
   
   public String toString() {
     return name;
@@ -187,7 +187,8 @@ void setup() {
     c.ref = row.getFloat("ref");
     c.name = row.getString("Object_name");
     c.searchName = row.getString("Search name");
-    
+    c.mouseOverOrbit = false;
+
     comets.add(c);
   }
   
@@ -232,32 +233,59 @@ void controlEvent(ControlEvent theControlEvent) {
   }
 }
 
-void drawOrbit(final float a, final float e, final float w, color c) {
+void drawOrbit(Comet comet) {
   PShape s = createShape();
   
   s.beginShape();
-  s.stroke(c);
-  s.noFill();
   
-  for(int i=0; i<=360; i+=1) {
+  if(comet.mouseOverOrbit){
+     s.stroke(color(255, 0, 0));
+  }
+  else{
+     s.stroke(color(255, 255, 255));
+  }
+ 
+  s.noFill();
+  final float a = comet.q + comet.Q;
+  
+  boolean mouseOverOrbit = false;
+  
+  for(float i=0; i<=360; i+=.25) {
     final float theta = radians(i);
-    final float r = a * (1-e*e) / (1 + e * cos(theta));
+    final float r = a * (1-comet.e*comet.e) / (1 + comet.e * cos(theta));
     final float x = r * cos(theta);
     final float y = r * sin(theta);
     
-    final float xx = x*cos(w) - y*sin(w);
-    final float yy = x*sin(w) + y*cos(w);
+    final float xx = x*cos(comet.w) - y*sin(comet.w);
+    final float yy = x*sin(comet.w) + y*cos(comet.w);
     
-    s.vertex(page.pageXtoScreenX(xx), page.pageYtoScreenY(yy));
+    final float screen_x = page.pageXtoScreenX(xx);
+    final float screen_y = page.pageYtoScreenY(yy);
+    
+    s.vertex(screen_x, screen_y);
+    
+    if((Math.abs(mouseX - screen_x) < 5) && (Math.abs(mouseY - screen_y) < 5)){
+        mouseOverOrbit = true;
+    }
+    
+  }
+  if(mouseOverOrbit){
+    comet.mouseOverOrbit = true;
+  }
+  else{
+    comet.mouseOverOrbit = false;
   }
   s.endShape();  
   shape(s);
 }
-
+  
 void draw() {
   background(10);
   
-  drawOrbit(1.0, 0.0, 0.0, color(0, 0, 255));
+  //drawOrbit(1.0, 0.0, 0.0, color(0, 0, 255));
+  noFill();
+  stroke(0,0,255);
+  circle(page.pageXtoScreenX(0), page.pageYtoScreenY(0), page.pageLengthToScreenLength(1));
   
   List<Comet> filteredComets = filter(comets, c -> (c.q <= currMaxq && c.q >= currMinq
                                                  && c.Q <= currMaxQ && c.Q >= currMinQ
@@ -268,8 +296,7 @@ void draw() {
   List<Comet> searchedComets = filter(filteredComets, c -> (searchValue.equals("") || searchValue.toLowerCase().equals(c.searchName.toLowerCase())));
   
   for (final Comet comet : searchedComets) {
-    final float a = comet.q + comet.Q;
-    drawOrbit(a, comet.e, comet.w, color(255, 255, 255));
+    drawOrbit(comet);
   }
   
   // Draw filter and search panel
@@ -291,11 +318,9 @@ void mousePressed() {
   page.mousePressed();
 }
 
-
 void mouseDragged() {
   page.mouseDragged();
 }
-
 
 void mouseWheel(MouseEvent e) {
   page.mouseWheel(e);
