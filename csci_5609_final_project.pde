@@ -233,6 +233,9 @@ void controlEvent(ControlEvent theControlEvent) {
   }
 }
 
+boolean orbitSelected = false;
+
+
 void drawOrbit(Comet comet) {
   PShape s = createShape();
   
@@ -265,16 +268,22 @@ void drawOrbit(Comet comet) {
     s.vertex(screen_x, screen_y);
     
     if((Math.abs(mouseX - screen_x) < 5) && (Math.abs(mouseY - screen_y) < 5)){
-        mouseOverOrbit = true;
+        //mouseOverOrbit = true;
+        if (!orbitSelected) {
+          mouseOverOrbit = true;
+          orbitSelected = true;
+        }
     }
     
+    comet.mouseOverOrbit = mouseOverOrbit;
+    
   }
-  if(mouseOverOrbit){
-    comet.mouseOverOrbit = true;
-  }
-  else{
-    comet.mouseOverOrbit = false;
-  }
+  //if(mouseOverOrbit){
+  //  comet.mouseOverOrbit = true;
+  //}
+  //else{
+  //  comet.mouseOverOrbit = false;
+  //}
   s.endShape();  
   shape(s);
 }
@@ -295,6 +304,7 @@ void draw() {
   // Filter by value in search bar, do not filter any if search bar is empty
   List<Comet> searchedComets = filter(filteredComets, c -> (searchValue.equals("") || searchValue.toLowerCase().equals(c.searchName.toLowerCase())));
   
+  orbitSelected = false;
   for (final Comet comet : searchedComets) {
     drawOrbit(comet);
   }
