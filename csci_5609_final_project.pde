@@ -225,7 +225,7 @@ void controlEvent(ControlEvent theControlEvent) {
   else if(theControlEvent.isFrom("MOID")) {
     currMinMOID = theControlEvent.getController().getArrayValue(0);
     currMaxMOID = theControlEvent.getController().getArrayValue(1);
-    System.out.format("MOID range [%f %f] update, done.\n", currMinMOID, currMaxMOID);
+    System.out.format("MOID range [%0.f %f] update, done.\n", currMinMOID, currMaxMOID);
   }
   else if (theControlEvent.isAssignableFrom(Textfield.class)) {
     searchValue = theControlEvent.getStringValue();
@@ -233,19 +233,21 @@ void controlEvent(ControlEvent theControlEvent) {
   }
 }
 
+
 boolean orbitSelected = false;
+Comet selectedComet = null;
 
 
-void drawOrbit(Comet comet) {
+void drawOrbit(Comet comet, color c) {
   PShape s = createShape();
   
   s.beginShape();
   
   if(comet.mouseOverOrbit){
-     s.stroke(color(255, 0, 0));
+     s.stroke(color(255, 255, 0));
   }
   else{
-     s.stroke(color(255, 255, 255));
+     s.stroke(c);
   }
  
   s.noFill();
@@ -276,6 +278,9 @@ void drawOrbit(Comet comet) {
     }
     
     comet.mouseOverOrbit = mouseOverOrbit;
+    if (mouseOverOrbit) {
+      selectedComet = comet;
+    }
     
   }
   //if(mouseOverOrbit){
@@ -302,11 +307,31 @@ void draw() {
                                                  && c.MOID <= currMaxMOID && c.MOID >= currMinMOID));
                                                  
   // Filter by value in search bar, do not filter any if search bar is empty
-  List<Comet> searchedComets = filter(filteredComets, c -> (searchValue.equals("") || searchValue.toLowerCase().equals(c.searchName.toLowerCase())));
+  List<Comet> searchedComets = filter(filteredComets, c -> (searchValue.equals("") || c.name.toLowerCase().contains(searchValue.toLowerCase())));
   
   orbitSelected = false;
+  selectedComet = null;
+  
+  float min = maxMOID;
+  float max = minMOID;
+  
   for (final Comet comet : searchedComets) {
-    drawOrbit(comet);
+    if (comet.MOID < min) {
+      min = comet.MOID;
+    }
+    if (comet.MOID > max) {
+      max = comet.MOID;
+    }
+  }
+  
+  //println("min="+min+"; max="+max);
+  
+  //color c = color(255, 255, 255);
+  for (final Comet comet : searchedComets) {
+    final float frac = (comet.MOID-min) / (max - min);
+    //println(frac);
+    final color c = lerpColor(color(255,0,0), color(255, 255, 255), frac);
+    drawOrbit(comet, c);
   }
   
   // Draw filter and search panel
@@ -316,6 +341,25 @@ void draw() {
   textSize(24);
   fill(255, 255, 255);
   text("Search and Filter", 1366, 28);
+  
+  
+  if (selectedComet != null) {
+    textSize(24);
+    fill(255, 255, 255);
+    text(selectedComet.name, 1325, 500);
+    
+    textSize(16);
+    text("Epoch: "+selectedComet.epoch, 1325, 525);
+    text("Eccentricity: "+selectedComet.e, 1325, 550);
+    text("Inclination: "+selectedComet.i+" deg", 1325, 575);
+    text("Arg of Periapsis: "+selectedComet.w+" deg", 1325, 600);
+    text("Node: "+selectedComet.node+" deg", 1325, 625);
+    text("Perihelion: "+selectedComet.q+" AU", 1325, 650);
+    text("Aphelion: "+selectedComet.Q+" AU", 1325, 675);
+    text("Period: "+selectedComet.P+" yr", 1325, 700);
+    text("MOID: "+selectedComet.MOID+" AU", 1325, 725);
+    
+  }
 }
 
 void keyPressed() {
