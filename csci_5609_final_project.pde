@@ -329,8 +329,7 @@ void draw() {
   //color c = color(255, 255, 255);
   for (final Comet comet : searchedComets) {
     final float frac = (comet.MOID-min) / (max - min);
-    //println(frac);
-    final color c = lerpColor(color(255,0,0), color(255, 255, 255), frac);
+    final color c = Float.isNaN(frac) ? color(255, 255, 255) : lerpColor(color(255,0,0), color(255, 255, 255), frac);
     drawOrbit(comet, c);
   }
   
@@ -342,6 +341,24 @@ void draw() {
   fill(255, 255, 255);
   text("Search and Filter", 1366, 28);
   
+  noStroke();
+  for (int i = 0; i <= 100; i++) {
+    final float w = 2;
+    final float h = 10;
+    final float x = 1335 + i * w;
+    final float y = 300;
+    final color c = lerpColor(color(255,0,0), color(255, 255, 255), i/100.0);
+    fill(c);
+    rect(x, y, w, h);
+  }
+  
+  fill(255, 255, 255);
+  textSize(14);
+  String s = min < 0.001 ? String.format("%.3e", min) : String.format("%.3f", min);
+  text(s, 1325, 325);
+  textAlign(RIGHT);
+  text(max, 1545, 325);
+  textAlign(LEFT);
   
   if (selectedComet != null) {
     textSize(24);
