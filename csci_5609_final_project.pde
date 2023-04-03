@@ -93,11 +93,11 @@ void setup() {
   // Init ControlP5 objects for filtering UI
   cp5 = new ControlP5(this);
   
-  qRange = cp5.addRange("Perihelion")
+  qRange = cp5.addRange("Perihelion (AU)")
              // disable broadcasting since setRange and setRangeValues will trigger an event
              .setBroadcast(false) 
-             .setPosition(1325,110)
-             .setSize(220,30)
+             .setPosition(1264,110)
+             .setSize(250,30)
              .setHandleSize(20)
              .setRange(minq,maxq)
              .setRangeValues(minq,maxq)
@@ -107,11 +107,11 @@ void setup() {
              .setColorBackground(color(255,25))  
              ;
              
-   QRange = cp5.addRange("Aphelion")
+   QRange = cp5.addRange("Aphelion (AU)")
              // disable broadcasting since setRange and setRangeValues will trigger an event
              .setBroadcast(false) 
-             .setPosition(1325,160)
-             .setSize(220,30)
+             .setPosition(1264,160)
+             .setSize(250,30)
              .setHandleSize(20)
              .setRange(minQ,maxQ)
              .setRangeValues(minQ,maxQ)
@@ -121,11 +121,11 @@ void setup() {
              .setColorBackground(color(255,25))  
              ;
              
-   PRange = cp5.addRange("Period")
+   PRange = cp5.addRange("Period (Yr)")
              // disable broadcasting since setRange and setRangeValues will trigger an event
              .setBroadcast(false) 
-             .setPosition(1325,210)
-             .setSize(220,30)
+             .setPosition(1264,210)
+             .setSize(250,30)
              .setHandleSize(20)
              .setRange(minP,maxP)
              .setRangeValues(minP,maxP)
@@ -135,11 +135,11 @@ void setup() {
              .setColorBackground(color(255,25))  
              ;
              
-   MOIDRange = cp5.addRange("MOID")
+   MOIDRange = cp5.addRange("MOID (AU)")
              // disable broadcasting since setRange and setRangeValues will trigger an event
              .setBroadcast(false) 
-             .setPosition(1325,260)
-             .setSize(220,30)
+             .setPosition(1264,260)
+             .setSize(250,30)
              .setHandleSize(20)
              .setRange(minMOID,maxMOID)
              .setRangeValues(minMOID,maxMOID)
@@ -152,8 +152,8 @@ void setup() {
    PFont font = createFont("arial",20);
 
    cp5.addTextfield("search")
-     .setPosition(1325,50)
-     .setSize(248,35)
+     .setPosition(1264,50)
+     .setSize(320,35)
      .setFont(font)
      .setFocus(true)
      .setColor(color(255,255,255))
@@ -204,7 +204,7 @@ void setup() {
 // Updates current search, min, and max values for filtering
 // Adapted from https://sojamo.de/libraries/controlP5/reference
 void controlEvent(ControlEvent theControlEvent) {
-  if(theControlEvent.isFrom("Perihelion")) {
+  if(theControlEvent.isFrom("Perihelion (AU)")) {
     // min and max values are stored in an array.
     // access this array with controller().arrayValue().
     // min is at index 0, max is at index 1.
@@ -212,17 +212,17 @@ void controlEvent(ControlEvent theControlEvent) {
     currMaxq = theControlEvent.getController().getArrayValue(1);
     System.out.format("q range [%f %f] update, done.\n", currMinq, currMaxq);
   }
-  else if(theControlEvent.isFrom("Aphelion")) {
+  else if(theControlEvent.isFrom("Aphelion (AU)")) {
     currMinQ = theControlEvent.getController().getArrayValue(0);
     currMaxQ = theControlEvent.getController().getArrayValue(1);
     System.out.format("Q range [%f %f] update, done.\n", currMinQ, currMaxQ);
   }
-  else if(theControlEvent.isFrom("Period")) {
+  else if(theControlEvent.isFrom("Period (Yr)")) {
     currMinP = theControlEvent.getController().getArrayValue(0);
     currMaxP = theControlEvent.getController().getArrayValue(1);
     System.out.format("P range [%f %f] update, done.\n", currMinP, currMaxP);
   }
-  else if(theControlEvent.isFrom("MOID")) {
+  else if(theControlEvent.isFrom("MOID (AU)")) {
     currMinMOID = theControlEvent.getController().getArrayValue(0);
     currMaxMOID = theControlEvent.getController().getArrayValue(1);
     System.out.format("MOID range [%0.f %f] update, done.\n", currMinMOID, currMaxMOID);
@@ -244,7 +244,7 @@ void drawOrbit(Comet comet, color c) {
   s.beginShape();
   
   if(comet.mouseOverOrbit){
-     s.stroke(color(255, 255, 0));
+     s.stroke(color(0, 255, 0));
   }
   else{
      s.stroke(c);
@@ -334,18 +334,19 @@ void draw() {
   }
   
   // Draw filter and search panel
+  noStroke();
   fill(150, 150, 150);
-  rect(1300, 0, 300, 900);
+  rect(1250, 0, 350, 900);
   
   textSize(24);
   fill(255, 255, 255);
-  text("Search and Filter", 1366, 28);
+  text("Search and Filter", 1341, 28);
   
   noStroke();
   for (int i = 0; i <= 100; i++) {
     final float w = 2;
     final float h = 10;
-    final float x = 1335 + i * w;
+    final float x = 1264 + i * w;
     final float y = 300;
     final color c = lerpColor(color(255,0,0), color(255, 255, 255), i/100.0);
     fill(c);
@@ -355,26 +356,26 @@ void draw() {
   fill(255, 255, 255);
   textSize(14);
   String s = min < 0.001 ? String.format("%.3e", min) : String.format("%.3f", min);
-  text(s, 1325, 325);
+  text(s, 1264, 325);
   textAlign(RIGHT);
-  text(max, 1545, 325);
+  text(max, 1484, 325);
   textAlign(LEFT);
   
   if (selectedComet != null) {
     textSize(24);
     fill(255, 255, 255);
-    text(selectedComet.name, 1325, 500);
+    text(selectedComet.name, 1274, 500);
     
     textSize(16);
-    text("Epoch: "+selectedComet.epoch, 1325, 525);
-    text("Eccentricity: "+selectedComet.e, 1325, 550);
-    text("Inclination: "+selectedComet.i+" deg", 1325, 575);
-    text("Arg of Periapsis: "+selectedComet.w+" deg", 1325, 600);
-    text("Node: "+selectedComet.node+" deg", 1325, 625);
-    text("Perihelion: "+selectedComet.q+" AU", 1325, 650);
-    text("Aphelion: "+selectedComet.Q+" AU", 1325, 675);
-    text("Period: "+selectedComet.P+" yr", 1325, 700);
-    text("MOID: "+selectedComet.MOID+" AU", 1325, 725);
+    text("Epoch: "+selectedComet.epoch, 1274, 525);
+    text("Eccentricity: "+selectedComet.e, 1274, 550);
+    text("Inclination: "+selectedComet.i+" deg", 1274, 575);
+    text("Arg of Periapsis: "+selectedComet.w+" deg", 1274, 600);
+    text("Node: "+selectedComet.node+" deg", 1274, 625);
+    text("Perihelion: "+selectedComet.q+" AU", 1274, 650);
+    text("Aphelion: "+selectedComet.Q+" AU", 1274, 675);
+    text("Period: "+selectedComet.P+" yr", 1274, 700);
+    text("MOID: "+selectedComet.MOID+" AU", 1274, 725);
     
   }
 }
