@@ -32,7 +32,7 @@ final float minQ = 4.09;
 final float maxQ = 64.27;
 final float minP = 3.3;
 final float maxP = 185.64;
-final float minMOID = 0.000518;
+final float minMOID = 0.01;
 final float maxMOID = 0.515916;
 
 // Current min and max values for filtering
