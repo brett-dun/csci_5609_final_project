@@ -87,8 +87,12 @@ ArrayList<Comet> comets = new ArrayList<Comet>();
 PanZoomPage page = new PanZoomPage();
 ControlP5 cp5;
 
+ColorMap cm;
+
 void setup() {
   size(1600,900);
+  
+  cm = new ColorMap("data/1-l_orangesat1.xml");
   
   // Init ControlP5 objects for filtering UI
   cp5 = new ControlP5(this);
@@ -245,9 +249,11 @@ void drawOrbit(Comet comet, color c) {
   
   if(comet.mouseOverOrbit){
      s.stroke(color(0, 255, 0));
+     s.strokeWeight(2);
   }
   else{
      s.stroke(c);
+     s.strokeWeight(1);
   }
  
   s.noFill();
@@ -298,8 +304,10 @@ void draw() {
   
   //drawOrbit(1.0, 0.0, 0.0, color(0, 0, 255));
   noFill();
-  stroke(0,0,255);
+  strokeWeight(2);
+  stroke(17,106,240);
   circle(page.pageXtoScreenX(0), page.pageYtoScreenY(0), page.pageLengthToScreenLength(1));
+  strokeWeight(1);
   
   List<Comet> filteredComets = filter(comets, c -> (c.q <= currMaxq && c.q >= currMinq
                                                  && c.Q <= currMaxQ && c.Q >= currMinQ
@@ -329,7 +337,7 @@ void draw() {
   //color c = color(255, 255, 255);
   for (final Comet comet : searchedComets) {
     final float frac = (comet.MOID-min) / (max - min);
-    final color c = Float.isNaN(frac) ? color(255, 255, 255) : lerpColor(color(255,0,0), color(255, 255, 255), frac);
+    final color c = Float.isNaN(frac) ? color(255, 255, 255) : cm.lookupColor(frac);
     drawOrbit(comet, c);
   }
   
@@ -346,9 +354,10 @@ void draw() {
   for (int i = 0; i <= 100; i++) {
     final float w = 2;
     final float h = 10;
-    final float x = 1264 + i * w;
+    final float x = 1288 + i * w;
     final float y = 300;
-    final color c = lerpColor(color(255,0,0), color(255, 255, 255), i/100.0);
+    //final color c = lerpColorLab(color(255,0,0), color(255, 255, 255), i/100.0);
+    final color c = cm.lookupColor(i/100.0);
     fill(c);
     rect(x, y, w, h);
   }
@@ -356,9 +365,9 @@ void draw() {
   fill(255, 255, 255);
   textSize(14);
   String s = min < 0.001 ? String.format("%.3e", min) : String.format("%.3f", min);
-  text(s, 1264, 325);
+  text(s, 1288, 325);
   textAlign(RIGHT);
-  text(max, 1484, 325);
+  text(max, 1490, 325);
   textAlign(LEFT);
   
   if (selectedComet != null) {
