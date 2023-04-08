@@ -302,7 +302,9 @@ void drawOrbit(Comet comet, color c) {
 void draw() {
   background(10);
   
-  //drawOrbit(1.0, 0.0, 0.0, color(0, 0, 255));
+  fill(255,150,0);
+  circle(page.pageXtoScreenX(0), page.pageYtoScreenY(0), page.pageLengthToScreenLength(.1));
+  
   noFill();
   strokeWeight(2);
   stroke(17,106,240);
