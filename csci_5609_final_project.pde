@@ -302,8 +302,10 @@ void drawOrbit(Comet comet, color c) {
 void draw() {
   background(10);
   
-  fill(255,150,0);
-  circle(page.pageXtoScreenX(0), page.pageYtoScreenY(0), page.pageLengthToScreenLength(.1));
+  
+  fill(255,255,0);
+  stroke(255,255,0);
+  circle(page.pageXtoScreenX(0), page.pageYtoScreenY(0), page.pageLengthToScreenLength(.05));
   
   noFill();
   strokeWeight(2);
@@ -363,10 +365,35 @@ void draw() {
     fill(c);
     rect(x, y, w, h);
   }
+  textSize(14);
+  fill(255);
+  text("MOID", 1500, 315);
+  
+  textSize(24);
+  text("Legend", 1341, 365);
+  
+  fill(255,255,0);
+  circle(1300, 390, 25);
+  fill(255,255,255);
+  textSize(14);
+  strokeWeight(2);
+  text("Sun", 1325, 395);
+  
+  stroke(0,255,0);
+  strokeWeight(3);
+  line(1275,425,1345, 425);
+  text("Selected orbit", 1350, 430);
+  
+  stroke(17,106,240);
+  strokeWeight(3);
+  line(1275,450,1345, 450);
+  text("Earth's Orbit", 1350, 455);
+  
   
   fill(255, 255, 255);
   textSize(14);
   String s = min < 0.001 ? String.format("%.3e", min) : String.format("%.3f", min);
+  
   text(s, 1288, 325);
   textAlign(RIGHT);
   text(max, 1490, 325);
@@ -375,18 +402,18 @@ void draw() {
   if (selectedComet != null) {
     textSize(24);
     fill(255, 255, 255);
-    text(selectedComet.name, 1274, 500);
+    text(selectedComet.name, 1274, 550);
     
     textSize(16);
-    text("Epoch: "+selectedComet.epoch, 1274, 525);
-    text("Eccentricity: "+selectedComet.e, 1274, 550);
-    text("Inclination: "+selectedComet.i+" deg", 1274, 575);
-    text("Arg of Periapsis: "+selectedComet.w+" deg", 1274, 600);
-    text("Node: "+selectedComet.node+" deg", 1274, 625);
-    text("Perihelion: "+selectedComet.q+" AU", 1274, 650);
-    text("Aphelion: "+selectedComet.Q+" AU", 1274, 675);
-    text("Period: "+selectedComet.P+" yr", 1274, 700);
-    text("MOID: "+selectedComet.MOID+" AU", 1274, 725);
+    text("Epoch: "+selectedComet.epoch, 1274, 575);
+    text("Eccentricity: "+selectedComet.e, 1274, 600);
+    text("Inclination: "+selectedComet.i+" deg", 1274, 625);
+    text("Arg of Periapsis: "+selectedComet.w+" deg", 1274, 650);
+    text("Node: "+selectedComet.node+" deg", 1274, 675);
+    text("Perihelion: "+selectedComet.q+" AU", 1274, 700);
+    text("Aphelion: "+selectedComet.Q+" AU", 1274, 725);
+    text("Period: "+selectedComet.P+" yr", 1274, 750);
+    text("MOID: "+selectedComet.MOID+" AU", 1274, 775);
     
   }
 }
