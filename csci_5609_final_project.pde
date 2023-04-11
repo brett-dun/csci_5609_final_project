@@ -34,6 +34,8 @@ final float minP = 3.3;
 final float maxP = 185.64;
 final float minMOID = 0.01;
 final float maxMOID = 0.515916;
+final float minEcc = 0.58698;
+final float maxEcc = 0.994268;
 
 // Current min and max values for filtering
 float currMinq = minq;
@@ -44,6 +46,8 @@ float currMinP = minP;
 float currMaxP = maxP;
 float currMinMOID = minMOID;
 float currMaxMOID = maxMOID;
+float currMinEcc = minEcc;
+float currMaxEcc = maxEcc;
 
 // Current search term in search box
 String searchValue = "";
@@ -53,6 +57,7 @@ Range qRange;
 Range QRange;
 Range PRange;
 Range MOIDRange;
+Range EccRange;
 
 class Comet {
   public String object;
@@ -73,7 +78,6 @@ class Comet {
   public float ref;
   public String name;
   public String searchName;
-  
   
   public boolean mouseOverOrbit;
   
@@ -138,11 +142,25 @@ void setup() {
              .setColorForeground(color(255,100))
              .setColorBackground(color(255,25))  
              ;
+
+    EccRange = cp5.addRange("Eccentricity")
+             // disable broadcasting since setRange and setRangeValues will trigger an event
+             .setBroadcast(false) 
+             .setPosition(1264,260)
+             .setSize(250,30)
+             .setHandleSize(20)
+             .setRange(minEcc,maxEcc)
+             .setRangeValues(minEcc,maxEcc)
+             // after the initialization we turn broadcast back on again
+             .setBroadcast(true)
+             .setColorForeground(color(255,100))
+             .setColorBackground(color(255,25))  
+             ;
              
    MOIDRange = cp5.addRange("MOID (AU)")
              // disable broadcasting since setRange and setRangeValues will trigger an event
              .setBroadcast(false) 
-             .setPosition(1264,260)
+             .setPosition(1264,310)
              .setSize(250,30)
              .setHandleSize(20)
              .setRange(minMOID,maxMOID)
@@ -231,7 +249,11 @@ void controlEvent(ControlEvent theControlEvent) {
     currMaxMOID = theControlEvent.getController().getArrayValue(1);
     System.out.format("MOID range [%0.f %f] update, done.\n", currMinMOID, currMaxMOID);
   }
-  else if (theControlEvent.isAssignableFrom(Textfield.class)) {
+  else if (theControlEvent.isFrom("Eccentricity")) {
+    currMinEcc = theControlEvent.getController().getArrayValue(0);
+    currMaxEcc = theControlEvent.getController().getArrayValue(1);
+    System.out.format("Ceccentricity  range [%0.f %f] update, done.\n", currMinEcc, currMaxEcc);
+  } else if (theControlEvent.isAssignableFrom(Textfield.class)) {
     searchValue = theControlEvent.getStringValue();
     System.out.format("Saerch value updated to '%s'\n", searchValue);
   }
@@ -316,7 +338,8 @@ void draw() {
   List<Comet> filteredComets = filter(comets, c -> (c.q <= currMaxq && c.q >= currMinq
                                                  && c.Q <= currMaxQ && c.Q >= currMinQ
                                                  && c.P <= currMaxP && c.P >= currMinP
-                                                 && c.MOID <= currMaxMOID && c.MOID >= currMinMOID));
+                                                 && c.MOID <= currMaxMOID && c.MOID >= currMinMOID
+                                                 && c.e <= currMaxEcc && c.e >= currMinEcc));
                                                  
   // Filter by value in search bar, do not filter any if search bar is empty
   List<Comet> searchedComets = filter(filteredComets, c -> (searchValue.equals("") || c.name.toLowerCase().contains(searchValue.toLowerCase())));
@@ -359,7 +382,7 @@ void draw() {
     final float w = 2;
     final float h = 10;
     final float x = 1288 + i * w;
-    final float y = 300;
+    final float y = 350;
     //final color c = lerpColorLab(color(255,0,0), color(255, 255, 255), i/100.0);
     final color c = cm.lookupColor(i/100.0);
     fill(c);
@@ -367,36 +390,36 @@ void draw() {
   }
   textSize(14);
   fill(255);
-  text("MOID", 1500, 315);
+  text("MOID", 1500, 360);
   
   textSize(24);
-  text("Legend", 1341, 365);
+  text("Legend", 1341, 410);
   
   fill(255,255,0);
-  circle(1300, 390, 25);
+  circle(1300, 435, 25);
   fill(255,255,255);
   textSize(14);
   strokeWeight(2);
-  text("Sun", 1325, 395);
+  text("Sun", 1325, 440);
   
   stroke(0,255,0);
   strokeWeight(3);
-  line(1275,425,1345, 425);
-  text("Selected orbit", 1350, 430);
+  line(1275,470,1345, 470);
+  text("Selected orbit", 1350, 475);
   
   stroke(17,106,240);
   strokeWeight(3);
-  line(1275,450,1345, 450);
-  text("Earth's Orbit", 1350, 455);
+  line(1275,495,1345, 495);
+  text("Earth's Orbit", 1350, 500);
   
   
   fill(255, 255, 255);
   textSize(14);
   String s = min < 0.001 ? String.format("%.3e", min) : String.format("%.3f", min);
   
-  text(s, 1288, 325);
+  text(s, 1288, 375);
   textAlign(RIGHT);
-  text(max, 1490, 325);
+  text(max, 1490, 375);
   textAlign(LEFT);
   
   if (selectedComet != null) {
