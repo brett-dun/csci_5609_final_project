@@ -392,6 +392,7 @@ void draw() {
   fill(255);
   text("MOID", 1500, 360);
   
+  fill(255, 255, 255);
   textSize(24);
   text("Legend", 1341, 410);
   
