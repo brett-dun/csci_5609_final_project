@@ -81,6 +81,9 @@ class Comet {
   
   public boolean mouseOverOrbit;
   
+  public float infoBoxX;
+  public float infoBoxY;
+  
   public String toString() {
     return name;
   }
@@ -263,6 +266,8 @@ void controlEvent(ControlEvent theControlEvent) {
 boolean orbitSelected = false;
 Comet selectedComet = null;
 
+ArrayList<Comet> selected = new ArrayList<Comet>();
+
 
 void drawOrbit(Comet comet, color c) {
   PShape s = createShape();
@@ -270,10 +275,12 @@ void drawOrbit(Comet comet, color c) {
   s.beginShape();
   
   if(comet.mouseOverOrbit){
-     s.stroke(color(0, 255, 0));
+     s.stroke(color(136, 252, 136));
      s.strokeWeight(2);
-  }
-  else{
+  } else if (selected.contains(comet)) {
+    s.stroke(color(0, 255, 0));
+    s.strokeWeight(2);
+  } else {
      s.stroke(c);
      s.strokeWeight(1);
   }
@@ -440,6 +447,38 @@ void draw() {
     text("MOID: "+selectedComet.MOID+" AU", 1274, 775);
     
   }
+  
+  for (final Comet c : selected) {
+    
+    if (!searchedComets.contains(c)) {
+      continue;
+    }
+    
+    final float x = page.pageXtoScreenX(c.infoBoxX);
+    final float y = page.pageYtoScreenY(c.infoBoxY);
+    
+    noStroke();
+    fill(150, 150, 150);
+    rect(x, y, 250, 200);
+    
+    textSize(24);
+    fill(255, 255, 255);
+    text(c.name, x+10, y+25);
+    
+    final float xx = x+10;
+    final float yy = y+50;
+    
+    textSize(16);
+    //text("Epoch: "+selectedComet.epoch, x+10, 575);
+    text("Eccentricity: "+c.e, xx, yy);
+    text("Inclination: "+c.i+" deg", xx, yy+20);
+    text("Arg of Periapsis: "+c.w+" deg", xx, yy+40);
+    text("Node: "+c.node+" deg", xx, yy+60);
+    text("Perihelion: "+c.q+" AU", xx, yy+80);
+    text("Aphelion: "+c.Q+" AU", xx, yy+100);
+    text("Period: "+c.P+" yr", xx, yy+120);
+    text("MOID: "+c.MOID+" AU", xx, yy+140);
+  }
 }
 
 void keyPressed() {
@@ -450,6 +489,51 @@ void keyPressed() {
 
 void mousePressed() {
   page.mousePressed();
+  boolean found = false;
+  for (Comet comet : comets) {
+    final float a = comet.q + comet.Q;
+    for(float i=0; i<=360; i+=.25) {
+      final float theta = radians(i);
+      final float r = a * (1-comet.e*comet.e) / (1 + comet.e * cos(theta));
+      final float x = r * cos(theta);
+      final float y = r * sin(theta);
+      
+      final float xx = x*cos(comet.w) - y*sin(comet.w);
+      final float yy = x*sin(comet.w) + y*cos(comet.w);
+      
+      final float screen_x = page.pageXtoScreenX(xx);
+      final float screen_y = page.pageYtoScreenY(yy);
+      
+      //s.vertex(screen_x, screen_y);
+      
+      if((Math.abs(mouseX - screen_x) < 5) && (Math.abs(mouseY - screen_y) < 5)){
+        ////mouseOverOrbit = true;
+        //if (!orbitSelected) {
+        //  //mouseOverOrbit = true;
+        //  //orbitSelected = true;
+        //}
+        //println(comet.name);
+        if (selected.contains(comet)) {
+          selected.remove(comet);
+        } else {
+          selected.add(comet);
+        }
+        found = true;
+        comet.infoBoxX = page.screenXtoPageX(mouseX);
+        comet.infoBoxY = page.screenYtoPageY(mouseY);
+        break;
+      }
+    }
+    if (found) {
+     break; 
+    }
+  }
+  
+  println("Selected:");
+  for (Comet c : selected) {
+    println(c.name+": "+c.infoBoxX+", "+c.infoBoxY);
+  }
+  println();
 }
 
 void mouseDragged() {
