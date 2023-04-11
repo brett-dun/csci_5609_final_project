@@ -375,7 +375,7 @@ void draw() {
   
   textSize(24);
   fill(255, 255, 255);
-  text("Search and Filter", 1341, 28);
+  text("Search and Filter", 1264, 28);
   
   noStroke();
   for (int i = 0; i <= 100; i++) {
@@ -394,7 +394,7 @@ void draw() {
   
   fill(255, 255, 255);
   textSize(24);
-  text("Legend", 1341, 410);
+  text("Legend", 1264, 410);
   
   fill(255,255,0);
   circle(1300, 435, 25);
