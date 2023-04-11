@@ -378,7 +378,7 @@ void draw() {
   // Draw filter and search panel
   noStroke();
   fill(150, 150, 150);
-  rect(1250, 0, 350, 900);
+  rect(1250, 0, 350, 525);
   
   textSize(24);
   fill(255, 255, 255);
@@ -413,7 +413,7 @@ void draw() {
   stroke(0,255,0);
   strokeWeight(3);
   line(1275,470,1345, 470);
-  text("Selected orbit", 1350, 475);
+  text("Selected Orbit", 1350, 475);
   
   stroke(17,106,240);
   strokeWeight(3);
@@ -430,23 +430,23 @@ void draw() {
   text(max, 1490, 375);
   textAlign(LEFT);
   
-  if (selectedComet != null) {
-    textSize(24);
-    fill(255, 255, 255);
-    text(selectedComet.name, 1274, 550);
+  //if (selectedComet != null) {
+  //  textSize(24);
+  //  fill(255, 255, 255);
+  //  text(selectedComet.name, 1274, 550);
     
-    textSize(16);
-    text("Epoch: "+selectedComet.epoch, 1274, 575);
-    text("Eccentricity: "+selectedComet.e, 1274, 600);
-    text("Inclination: "+selectedComet.i+" deg", 1274, 625);
-    text("Arg of Periapsis: "+selectedComet.w+" deg", 1274, 650);
-    text("Node: "+selectedComet.node+" deg", 1274, 675);
-    text("Perihelion: "+selectedComet.q+" AU", 1274, 700);
-    text("Aphelion: "+selectedComet.Q+" AU", 1274, 725);
-    text("Period: "+selectedComet.P+" yr", 1274, 750);
-    text("MOID: "+selectedComet.MOID+" AU", 1274, 775);
+  //  textSize(16);
+  //  text("Epoch: "+selectedComet.epoch, 1274, 575);
+  //  text("Eccentricity: "+selectedComet.e, 1274, 600);
+  //  text("Inclination: "+selectedComet.i+" deg", 1274, 625);
+  //  text("Arg of Periapsis: "+selectedComet.w+" deg", 1274, 650);
+  //  text("Node: "+selectedComet.node+" deg", 1274, 675);
+  //  text("Perihelion: "+selectedComet.q+" AU", 1274, 700);
+  //  text("Aphelion: "+selectedComet.Q+" AU", 1274, 725);
+  //  text("Period: "+selectedComet.P+" yr", 1274, 750);
+  //  text("MOID: "+selectedComet.MOID+" AU", 1274, 775);
     
-  }
+  //}
   
   for (final Comet c : selected) {
     
